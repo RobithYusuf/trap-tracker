@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TrapTracker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      width: 400px;
+      height: 600px;
+      background: #f0fdf4;
+      overflow: hidden;
+      margin: 0;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    
+    /* Header */
+    .header {
+      background: #ffffff;
+      padding: 10px 14px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #15803d;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .settings-btn {
+      padding: 6px 10px;
+      background: #6b7280;
+      color: white;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    
+    .settings-btn:hover {
+      background: #4b5563;
+    }
+    
+    .header-btn {
+      background: none;
+      border: none;
+      padding: 6px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    
+    .header-btn:hover {
+      background: #f3f4f6;
+    }
+    
+    .header-btn {
+      padding: 6px 10px;
+      background: #3b82f6;
+      color: white;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .header-btn:hover {
+      background: #2563eb;
+    }
+    
+    .header-btn.loading .refresh-icon {
+      animation: spin 1s linear infinite;
+    }
+    
+    /* Error Stats Bar */
+    .error-stats {
+      background: #ffffff;
+      padding: 8px 14px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    
+    .stat-mini {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .stat-mini-icon {
+      font-size: 18px;
+    }
+    
+    .stat-mini-value {
+      font-weight: 700;
+      color: #15803d;
+      font-size: 16px;
+    }
+    
+    /* Error Canvas */
+    .error-canvas {
+      flex: 1;
+      background: #fafafa;
+      overflow-y: auto;
+      overflow-x: auto;
+      position: relative;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      margin: 10px;
+      margin-bottom: 8px;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      padding: 16px 20px;
+      white-space: pre;
+      color: #374151;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      resize: none;
+      outline: none;
+    }
+    
+    /* Make it look focused */
+    .error-canvas:hover {
+      border-color: #9ca3af;
+    }
+    
+    
+    /* Actions */
+    .actions {
+      background: #ffffff;
+      padding: 10px 14px;
+      border-top: 1px solid #e5e7eb;
+      display: grid;
+      grid-template-columns: 4.5fr 4.5fr 1fr;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    
+    .btn {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: #16a34a;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #15803d;
+    }
+    
+    .btn-secondary {
+      background: #ffffff;
+      color: #16a34a;
+      border: 2px solid #16a34a;
+    }
+    
+    .btn-secondary:hover {
+      background: #f0fdf4;
+    }
+    
+    .btn-refresh {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    .btn-refresh:hover {
+      background: #2563eb;
+    }
+    
+    /* Loading state */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    .refresh-icon {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+    
+    .btn-refresh:hover .refresh-icon {
+      transform: rotate(180deg);
+    }
+    
+    .btn-refresh.loading .refresh-icon {
+      animation: spin 1s linear infinite;
+    }
+    
+    .btn-ai {
+      background: #8b5cf6;
+      color: white;
+    }
+    
+    .btn-ai:hover {
+      background: #7c3aed;
+    }
+    
+    /* Custom Scrollbar */
+    .error-canvas::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    .error-canvas::-webkit-scrollbar-track {
+      background: #f3f4f6;
+      border-radius: 4px;
+    }
+    
+    .error-canvas::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    
+    .error-canvas::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    .error-canvas::-webkit-scrollbar-corner {
+      background: #f3f4f6;
+    }
+    
+    /* Footer */
+    .footer {
+      background: #f9fafb;
+      padding: 8px;
+      text-align: center;
+      border-top: 1px solid #e5e7eb;
+      flex-shrink: 0;
+    }
+    
+    .footer span {
+      font-size: 11px;
+      color: #6b7280;
+      font-weight: 400;
+    }
+    
+    .footer strong {
+      color: #374151;
+      font-weight: 600;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🪤 TrapTracker</h1>
+      <div class="header-actions">
+        <button id="refresh-errors" class="header-btn">Refresh <span class="refresh-icon">🔄</span></button>
+        <button id="settings-btn" class="settings-btn">
+          Settings ⚙️
+        </button>
+      </div>
+    </header>
+    
+    <div class="error-stats">
+      <div class="stat-mini">
+        <span class="stat-mini-icon">🪤</span>
+        <span class="stat-mini-value" id="js-errors">0</span>
+      </div>
+      <div class="stat-mini">
+        <span class="stat-mini-icon">🕸️</span>
+        <span class="stat-mini-value" id="network-errors">0</span>
+      </div>
+      <div class="stat-mini">
+        <span class="stat-mini-icon">⚠️</span>
+        <span class="stat-mini-value" id="console-errors">0</span>
+      </div>
+      <div class="stat-mini">
+        <span class="stat-mini-icon">🚫</span>
+        <span class="stat-mini-value" id="resource-errors">0</span>
+      </div>
+    </div>
+    
+    <div class="error-canvas" id="error-canvas"></div>
+    
+    <div class="actions">
+      <button id="clear-errors" class="btn btn-secondary">Clear All</button>
+      <button id="copy-errors" class="btn btn-primary">Copy 📋</button>
+      <button id="copy-with-ai" class="btn btn-ai" title="Copy dengan AI prompt">✨</button>
+    </div>
+    
+    <div class="footer">
+      <span>Made with ❤️ by <strong>robithdev</strong></span>
+    </div>
+    
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

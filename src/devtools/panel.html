@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TrapTracker Panel</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f9fafb;
+      color: #1f2937;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    
+    /* Header */
+    .header {
+      background: #ffffff;
+      padding: 12px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #15803d;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .error-count {
+      background: #dc2626;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .btn {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+    
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+    
+    /* Filters */
+    .filters {
+      background: #ffffff;
+      padding: 10px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .filter-select, .filter-search {
+      padding: 6px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    
+    .filter-select:focus, .filter-search:focus {
+      outline: none;
+      border-color: #16a34a;
+    }
+    
+    .filter-search {
+      flex: 1;
+    }
+    
+    /* Main Content */
+    .main-content {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    
+    /* Error List */
+    .error-list-container {
+      width: 40%;
+      background: #ffffff;
+      border-right: 1px solid #e5e7eb;
+      overflow-y: auto;
+    }
+    
+    .error-list {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .error-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    
+    .error-item:hover {
+      background: #f0fdf4;
+    }
+    
+    .error-item.selected {
+      background: #dcfce7;
+      border-left: 3px solid #16a34a;
+      padding-left: 13px;
+    }
+    
+    .error-type {
+      font-weight: 500;
+      font-size: 12px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .error-message {
+      color: #6b7280;
+      font-size: 11px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .error-time {
+      color: #9ca3af;
+      font-size: 10px;
+      margin-top: 4px;
+    }
+    
+    /* Error Detail */
+    .error-detail-container {
+      flex: 1;
+      background: #ffffff;
+      overflow-y: auto;
+    }
+    
+    .error-detail {
+      padding: 20px;
+    }
+    
+    .empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #9ca3af;
+    }
+    
+    .error-detail h3 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      color: #111827;
+    }
+    
+    .error-detail .error-message {
+      background: #fef2f2;
+      border: 1px solid #fee2e2;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      color: #dc2626;
+      white-space: pre-wrap;
+      font-size: 12px;
+    }
+    
+    .error-stack {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 11px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+      white-space: pre;
+    }
+    
+    .error-info {
+      margin-bottom: 12px;
+      color: #6b7280;
+      font-size: 12px;
+    }
+    
+    .error-info strong {
+      color: #374151;
+    }
+    
+    .error-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .error-actions button {
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+    
+    .btn-primary {
+      background: #16a34a;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #15803d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🪤 TrapTracker</h1>
+      <div class="header-actions">
+        <span id="error-count" class="error-count">Errors: 0</span>
+        <button id="export-errors" class="btn btn-secondary">Export</button>
+        <button id="clear-errors" class="btn btn-secondary">Clear All</button>
+        <button id="settings" class="btn btn-secondary">⚙️</button>
+      </div>
+    </header>
+    
+    <div class="filters">
+      <select id="filter-type" class="filter-select">
+        <option value="all">All Types</option>
+        <option value="error">JavaScript Errors</option>
+        <option value="console">Console Messages</option>
+        <option value="network">Network Errors</option>
+        <option value="resource">Resource Errors</option>
+        <option value="promise">Promise Rejections</option>
+      </select>
+      <input type="text" id="filter-search" class="filter-search" placeholder="Search errors...">
+    </div>
+    
+    <div class="main-content">
+      <div class="error-list-container">
+        <div id="error-list" class="error-list"></div>
+      </div>
+      
+      <div class="error-detail-container">
+        <div id="error-detail" class="error-detail">
+          <div class="empty-state">
+            <p>Select an error to view details</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="panel.js"></script>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TrapTracker Settings</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f9fafb;
+      color: #1f2937;
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    header h1 {
+      font-size: 24px;
+      color: #15803d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .settings-content {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 30px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    
+    .settings-section {
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .settings-section h2 {
+      font-size: 16px;
+      color: #374151;
+      margin-bottom: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .setting-item {
+      margin-bottom: 15px;
+    }
+    
+    .setting-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .setting-item label {
+      display: flex;
+      align-items: flex-start;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    
+    .setting-item label:hover {
+      background: #f3f4f6;
+    }
+    
+    .setting-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-right: 10px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: #16a34a;
+      flex-shrink: 0;
+    }
+    
+    .setting-label {
+      flex: 1;
+    }
+    
+    .setting-label-text {
+      font-weight: 500;
+      color: #374151;
+      display: block;
+      font-size: 14px;
+    }
+    
+    .setting-description {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    
+    .setting-item input[type="number"], 
+    .setting-item select {
+      margin-top: 8px;
+      padding: 6px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .setting-item input[type="number"]:focus,
+    .setting-item select:focus {
+      outline: none;
+      border-color: #16a34a;
+    }
+    
+    .setting-item input[type="number"] {
+      width: 100px;
+    }
+    
+    .setting-item select {
+      width: 150px;
+    }
+    
+    .actions {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 100;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    
+    .actions:hover {
+      opacity: 1;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #16a34a;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #15803d;
+    }
+    
+    .btn-secondary {
+      background: #ffffff;
+      color: #374151;
+      border: 2px solid #d1d5db;
+    }
+    
+    .btn-secondary:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+    
+    .success-message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #16a34a;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Keyboard Shortcut Styles */
+    .shortcut-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    .shortcut-input {
+      flex: 1;
+      max-width: 200px;
+      padding: 8px 12px;
+      border: 2px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      background: #f9fafb;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    
+    .shortcut-input:hover {
+      border-color: #16a34a;
+      background: #ffffff;
+    }
+    
+    .shortcut-input:focus {
+      outline: none;
+      border-color: #16a34a;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    }
+    
+    .shortcut-input.recording {
+      border-color: #3b82f6;
+      background: #eff6ff;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+    }
+    
+    .btn-clear-shortcut {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #6b7280;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-clear-shortcut:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+      background: #fef2f2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🪤 Pengaturan TrapTracker</h1>
+      <p style="font-size: 14px; color: #6b7280; margin-top: 8px;">
+        <span style="color: #16a34a;">✓</span> Auto-save aktif - Perubahan tersimpan otomatis
+      </p>
+    </header>
+    
+    <div class="settings-content">
+      
+      <!-- Filter Settings -->
+      <section class="settings-section">
+        <h2>🔧 Filter Error</h2>
+        
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="filterNoise" checked>
+            <div class="setting-label">
+              <span class="setting-label-text">Filter Error Extension</span>
+              <p class="setting-description">Sembunyikan error dari extension lain</p>
+            </div>
+          </label>
+        </div>
+      </section>
+      
+      <!-- Storage Settings -->
+      <section class="settings-section">
+        <h2>💾 Penyimpanan</h2>
+        
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-label-text">Maksimal Error Per Tab</span>
+            <input type="number" id="maxErrors" value="1000" min="100" max="5000">
+          </div>
+        </div>
+        
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-label-text">Hapus Otomatis</span>
+            <select id="autoClearMode" style="width: 100%; margin-top: 8px;">
+              <option value="never">Tidak pernah</option>
+              <option value="refresh">Setelah refresh halaman</option>
+              <option value="1">Setiap 1 menit</option>
+              <option value="5">Setiap 5 menit</option>
+              <option value="10">Setiap 10 menit</option>
+              <option value="30">Setiap 30 menit</option>
+              <option value="60">Setiap 1 jam</option>
+            </select>
+            <p class="setting-description">Otomatis hapus error lama</p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Keyboard Shortcuts -->
+      <section class="settings-section">
+        <h2>⌨️ Pintasan Keyboard</h2>
+        
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-label-text">Info Pintasan Browser</span>
+            <p class="setting-description">Pintasan keyboard diatur melalui browser. Klik tombol di bawah untuk membuka pengaturan.</p>
+          </div>
+        </div>
+        
+        <div class="setting-item">
+          <button id="open-shortcuts" class="btn btn-primary" style="width: 100%;">
+            Buka Pengaturan Pintasan Browser
+          </button>
+        </div>
+        
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-label-text">Pintasan Default:</span>
+            <p class="setting-description">• Alt+1 - Salin semua error</p>
+            <p class="setting-description">• Alt+2 - Re-detect error (tanpa reload halaman)</p>
+            <p class="setting-description">• Alt+3 - Hapus semua error</p>
+            <p class="setting-description">• Alt+Shift+T - Buka popup</p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Domain Filter Settings -->
+      <section class="settings-section">
+        <h2>🌐 Filter Domain</h2>
+        
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-label-text">Mode Filter</span>
+            <select id="domainFilterMode" style="width: 100%; margin-top: 8px;">
+              <option value="all">All Domains - Track semua error</option>
+              <option value="development">Development Only - Localhost & dev domains</option>
+              <option value="custom">Custom - Atur sendiri whitelist/blacklist</option>
+            </select>
+            <p class="setting-description">Pilih domain mana yang ingin di-track</p>
+          </div>
+        </div>
+        
+        <!-- Custom Domain Settings -->
+        <div id="customDomainSettings" style="display: none;">
+          <div class="setting-item">
+            <div class="setting-label">
+              <span class="setting-label-text">Whitelist Domains</span>
+              <p class="setting-description">Domain yang AKAN di-track (satu per baris, support wildcard *)</p>
+              <textarea id="whitelistDomains" style="width: 100%; height: 80px; margin-top: 8px; font-family: monospace; font-size: 12px;" placeholder="localhost&#10;127.0.0.1&#10;*.myproject.test&#10;192.168.*"></textarea>
+            </div>
+          </div>
+          
+          <div class="setting-item">
+            <div class="setting-label">
+              <span class="setting-label-text">Blacklist Domains</span>
+              <p class="setting-description">Domain yang TIDAK akan di-track</p>
+              <textarea id="blacklistDomains" style="width: 100%; height: 80px; margin-top: 8px; font-family: monospace; font-size: 12px;" placeholder="*.googlevideo.com&#10;*.doubleclick.net&#10;*.facebook.com"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Smart Filters -->
+        <div class="setting-item">
+          <div class="setting-label">
+            <span class="setting-label-text">Smart Filters</span>
+            <p class="setting-description">Filter otomatis untuk mengurangi noise</p>
+          </div>
+        </div>
+        
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="filter403External" checked>
+            <div class="setting-label">
+              <span class="setting-label-text">Filter 403 External</span>
+              <p class="setting-description">Abaikan error 403 dari domain eksternal</p>
+            </div>
+          </label>
+        </div>
+        
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="filterMediaStreaming" checked>
+            <div class="setting-label">
+              <span class="setting-label-text">Filter Media Streaming</span>
+              <p class="setting-description">Abaikan error video/audio streaming</p>
+            </div>
+          </label>
+        </div>
+        
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="filterDuplicates" checked>
+            <div class="setting-label">
+              <span class="setting-label-text">Filter Duplicates</span>
+              <p class="setting-description">Abaikan error yang sama dalam 5 detik</p>
+            </div>
+          </label>
+        </div>
+      </section>
+      
+      <!-- Developer Settings -->
+      <section class="settings-section">
+        <h2>👩‍💻 Pengembang</h2>
+        
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="debugMode">
+            <div class="setting-label">
+              <span class="setting-label-text">Mode Debug</span>
+              <p class="setting-description">Tampilkan log detail di console</p>
+            </div>
+          </label>
+        </div>
+        
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="showTimestamps" checked>
+            <div class="setting-label">
+              <span class="setting-label-text">Tampilkan Waktu</span>
+              <p class="setting-description">Tampilkan waktu untuk setiap error</p>
+            </div>
+          </label>
+        </div>
+      </section>
+    </div>
+    
+    <div class="actions">
+      <button id="resetSettings" class="btn btn-secondary">Reset ke Default</button>
+    </div>
+  </div>
+  
+  <script src="options.js"></script>
+</body>
+</html>
