@@ -30,9 +30,18 @@ TrapTracker is a powerful Chrome extension designed to capture and track all typ
 ### 🛠️ Developer Experience
 - **Clean UI**: Minimalist popup with error statistics
 - **Keyboard Shortcuts**: `Alt+1` (Copy), `Alt+2` (Refresh), `Alt+3` (Clear)
-- **AI Integration**: One-click copy with AI-ready prompts
 - **Smart Filtering**: Automatic noise reduction (ads, extensions, duplicates)
 - **Domain Filtering**: Focus on development domains only
+
+## 📸 Screenshots
+
+### Extension Popup
+![TrapTracker Popup](traptracker.png)
+*Real-time error tracking with categorized error counts*
+
+### Settings Page
+![TrapTracker Settings](settings.png)
+*Configure domain filtering, smart filters, and auto-clear options*
 
 ## 📥 Installation
 
@@ -69,9 +78,8 @@ cd trap-tracker
 - **DevTools Panel**: Full error details with stack traces
 
 ### Copy Errors for Debugging
-- Click **"Copy 📋"** to copy all errors
-- Click **"✨"** to copy with AI debugging prompt
-- Paste into ChatGPT, Claude, or your preferred AI assistant
+- Click **"Copy 📋"** to copy all errors in formatted text
+- Errors are formatted for easy sharing and debugging
 
 ## 🏗️ Architecture
 
@@ -134,15 +142,6 @@ TrapTracker automatically detects Laravel applications and provides enhanced err
     </script>
 @endif
 ```
-
-## 🤖 AI Integration
-
-TrapTracker formats errors for easy AI debugging:
-
-1. Capture errors during development
-2. Click the **✨** button to copy with AI prompt
-3. Paste into ChatGPT or Claude
-4. Get instant debugging suggestions
 
 ## 📊 Performance Impact
 
